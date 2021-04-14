@@ -104,9 +104,8 @@ jobs:
             BUILD_REF=${{ github.sha }}
             BUILD_REPOSITORY=${{ github.repository }}
             BUILD_VERSION=${{ needs.information.outputs.version }}
-  publish-stable:
-    name: 📢 Publish to stable repository
-    if: needs.information.outputs.environment == 'stable'
+  publish-tesbed:
+    name: 📢 Publish to testbed repository
     needs:
       - information
       - deploy
@@ -118,7 +117,7 @@ jobs:
         uses: peter-evans/repository-dispatch@v1.1.3
         with:
           token: ${{ secrets.MY_GITHUB_TOKEN }}
-          repository: mdegat01/hassio-addons-testbed
+          repository: mdegat01/addons-testbed
           event-type: update
           client-payload: >
             {
