@@ -1,0 +1,51 @@
+include <tunables/global>
+
+# Docker overlay
+@{fs_root}=/ /docker/overlay2/*/diff/
+@{do_etc_rw}=@{fs_root}/@{etc_rw}/
+@{do_etc_ro}=@{fs_root}/@{etc_ro}/
+@{do_run}=@{fs_root}/@{run}/
+@{do_usr}=@{fs_root}/usr/
+@{do_var}=@{fs_root}/var/
+
+# Nginx data dirs
+@{nginx_data}=@{do_usr}/lib/nginx/ @{do_usr}/share/nginx/ @{do_var}/lib/nginx/
+
+profile loki flags=(attach_disconnected,mediate_deleted) {
+  include <abstractions/base>
+
+  # Send signals to children
+  signal (send) set=(kill,term,int,hup,cont),
+
+  # S6-Overlay
+  /init                             rix,
+  /bin/**                           rix,
+  /usr/bin/**                       rix,
+  @{do_etc_ro}/s6/**                rix,
+  @{do_etc_rw}/services.d/{,**}     rwix,
+  @{do_etc_rw}/cont-init.d/{,**}    rwix,
+  @{do_etc_rw}/cont-finish.d/{,**}  rwix,
+  @{do_etc_rw}/fix-attrs.d/{,**}    rw,
+  @{do_run}/s6/**                   rwix,
+  @{do_run}/**                      rwk,
+  /dev/tty                          rw,
+  @{do_usr}/lib/locale/{,**}        r,
+  @{do_etc_ro}/group                r,
+  @{do_etc_ro}/passwd               r,
+  @{do_etc_ro}/hosts                r,
+  @{do_etc_ro}/ssl/openssl.cnf      r,
+  /dev/null                         k,
+
+  # Bashio
+  /usr/lib/bashio/**                ix,
+  /tmp/**                           rw,
+
+  # Options.json & addon data
+  /data                             r,
+  /data/**                          rw,
+
+  # Shell access
+  owner @{HOME}/.*                  rw,
+  @{do_etc_ro}/inputrc              r,
+  @{do_etc_ro}/terminfo/x/xterm-256color r,
+}

@@ -1,0 +1,8 @@
+{
+  "name": "Testbed",
+  "url": "https://github.com/mdegat01/addon-testbed",
+  "version": "edge",
+  "slug": "testbed",
+  "arch": ["aarch64"],
+  "description": "Testbed for Home Assistant"
+}
