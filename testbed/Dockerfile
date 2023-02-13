@@ -1,7 +1,7 @@
 # https://github.com/hassio-addons/addon-base/releases
 ARG BUILD_FROM=ghcr.io/hassio-addons/base/aarch64:9.1.5
 
-FROM alpine:3.14.0 as build
+FROM alpine:3.17.2 as build
 
 RUN mkdir -p /data/test
 
